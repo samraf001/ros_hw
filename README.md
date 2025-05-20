@@ -50,6 +50,7 @@ ros_hw: Implements the service server (service_server.py) and the data client (d
 The system is designed to request raw and cleaned sensor data via TCP, process it, and publish the results on ROS 2 topics.
 
 **Features**
+
 Service Server: Connects to a TCP sensor, retrieves data, processes it, and serves it via ROS 2 services.
 
 Data Client: Periodically requests data from the service server and publishes it to ROS 2 topics.
