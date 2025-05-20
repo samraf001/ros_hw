@@ -35,3 +35,147 @@ Install instructions (Ubuntu): [https://docs.ros.org/en/humble/Installation/Ubun
 
 ROS2 tutorials: [https://docs.ros.org/en/humble/Tutorials/Beginner-Client-Libraries.html](https://docs.ros.org/en/humble/Tutorials/Beginner-Client-Libraries.html)
 
+
+**Solution**
+
+**ROS 2 3-DOF Sensor Data Pipeline**
+
+Overview
+This ROS 2 project facilitates the acquisition, processing, and publication of 3-DOF sensor data. It consists of two primary packages:
+
+ros_hw_interfaces: Defines the custom service interface ThreeDOF.srv.
+
+ros_hw: Implements the service server (service_server.py) and the data client (data_client.py).
+
+The system is designed to request raw and cleaned sensor data via TCP, process it, and publish the results on ROS 2 topics.
+
+**Features**
+Service Server: Connects to a TCP sensor, retrieves data, processes it, and serves it via ROS 2 services.
+
+Data Client: Periodically requests data from the service server and publishes it to ROS 2 topics.
+
+Custom Service Interface: ThreeDOF.srv defines the request and response structure for data acquisition.
+
+**Prerequisites**
+
+Operating System: Ubuntu 22.04
+
+ROS 2 Distribution: Humble Hawksbill
+
+Python: 3.10 or higher
+
+Packages:
+
+rclpy
+
+std_msgs
+
+numpy
+
+Ensure that the ROS 2 environment is properly sourced:
+
+bash
+Copy
+Edit
+source /opt/ros/humble/setup.bash
+Installation
+
+**1. Create a ROS 2 Workspace:**
+
+mkdir -p ~/ros2_ws/src
+cd ~/ros2_ws/src
+
+**Clone the Repositories:**
+
+git clone <repository_url_for_ros_hw_interfaces>
+git clone <repository_url_for_ros_hw>
+
+**2. Build the Workspace:**
+
+cd ~/ros2_ws
+colcon build
+
+**3. Source the Workspace:**
+
+source install/setup.bash
+
+**Usage**
+
+
+Running the Service Server
+
+Start the service server to connect to the TCP sensor and provide data services:
+
+`ros2 run ros_hw service_server`
+
+Running the Data Client
+
+The data client requests data from the service server and publishes it to ROS 2 topics. You can specify the publishing frequency using the --ros-args parameter:
+
+
+`ros2 run ros_hw data_client --ros-args -p publish_frequency:=10.0`
+
+Replace 10.0 with your desired frequency in Hz.
+
+**Monitoring Published Topics**
+
+To monitor the published data:
+
+`ros2 topic echo /raw_data`
+
+`ros2 topic echo /cleaned_data`
+
+**Adjusting Parameters at Runtime**
+
+You can adjust the publishing frequency at runtime using:
+
+`ros2 param set /data_client publish_frequency 20.0`
+
+**Custom Service Interface: ThreeDOF.srv**
+
+Located in ros_hw_interfaces/srv/ThreeDOF.srv, this service interface is defined as:
+
+int32 num_samples
+---
+float32[] x
+float32[] y
+float32[] z
+
+Request: Number of samples to retrieve.
+
+Response: Arrays of x, y, and z axis data.
+
+**System Architecture**
+
+The system comprises:
+
+Service Server (service_server.py):
+
+Connects to the TCP sensor.
+
+Retrieves and processes raw data.
+
+Provides two services:
+
+get_raw_3dof_data
+
+get_cleaned_3dof_data
+
+Data Client (data_client.py):
+
+Periodically requests data from the service server.
+
+Publishes raw and cleaned data to:
+
+/raw_data
+
+/cleaned_data
+
+**Performance Considerations**
+
+Sampling Rate: The sensor samples at 2000 Hz.
+
+Service Call Delay: Each service call introduces approximately 1 ms delay.
+
+Optimal Sample Size: To balance performance and data freshness, requesting around 10 samples per call is recommended.
+
