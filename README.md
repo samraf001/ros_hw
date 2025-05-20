@@ -136,11 +136,15 @@ You can adjust the publishing frequency at runtime using:
 
 Located in ros_hw_interfaces/srv/ThreeDOF.srv, this service interface is defined as:
 
-int32 num_samples
----
-float32[] x
-float32[] y
-float32[] z
+`int32 num_samples`
+
+`---`
+
+`float32[] x`
+
+`float32[] y`
+
+`float32[] z`
 
 Request: Number of samples to retrieve.
 
